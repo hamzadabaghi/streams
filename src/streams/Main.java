@@ -1,12 +1,10 @@
 package streams;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Main {
@@ -18,10 +16,10 @@ public class Main {
 
         List<Movie> movies = List.of(
 
-                new Movie("a",30),
-                new Movie("a",30),
-                new Movie("b",20),
-                new Movie("c",10)
+                new Movie("a",30,Genre.ACTION),
+                new Movie("a",30,Genre.LOVE),
+                new Movie("b",20,Genre.LOVE),
+                new Movie("c",10,Genre.HORROR)
         );
 
         System.out.println("------------Stream of objects, short demo---------------");
@@ -127,6 +125,61 @@ public class Main {
                 .filter(m->m.getLikes()>10)
                 .peek(m-> System.out.println("Filtered : "+m.getTitle()))
                 .forEach(System.out::println);
+
+        System.out.println("-----------Simple Reducers : any match----------------");
+
+        var result = movies.stream()
+                .anyMatch(m->m.getLikes()>10);
+
+        System.out.println(result);
+
+        System.out.println("-----------Simple Reducers : all match----------------");
+
+        // noneMatch the opposite
+        var r = movies.stream()
+                .allMatch(m->m.getLikes()>10);
+
+        System.out.println(r);
+
+        System.out.println("-----------Simple Reducers : find first ----------------");
+
+        // there is also max , findAny ...
+        var movie = movies.stream()
+                .findFirst( )
+                .get();
+
+        System.out.println(movie.getTitle());
+
+        System.out.println("----------- Reducers : single value ----------------");
+
+        //optional : the stream may return or not a value
+        Optional<Integer> sum = movies.stream()
+                .map(Movie::getLikes)
+                .reduce(Integer::sum);
+
+        // or else , we supply a default value
+        System.out.println(sum.orElse(0));
+
+
+        System.out.println("----------- Collectors ----------------");
+
+        // toMap ...
+        var topMovies = movies.stream()
+                .filter(m->m.getLikes()>10)
+                .collect(Collectors.toList());
+
+
+        System.out.println("----------- Grouping elements ----------------");
+
+        var re = movies.stream()
+                .collect(Collectors.groupingBy(Movie::getGenre));
+
+        System.out.println(re);
+
+        // we have also partitioning , some variation of stream : IntStream , LongStream ....
+
+
+
 
 
 
