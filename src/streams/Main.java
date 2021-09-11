@@ -121,6 +121,12 @@ public class Main {
                 .distinct()
                 .forEach(System.out::println);
 
+        System.out.println("-----------Peeking elements ----------------");
+
+        movies.stream()
+                .filter(m->m.getLikes()>10)
+                .peek(m-> System.out.println("Filtered : "+m.getTitle()))
+                .forEach(System.out::println);
 
 
 
